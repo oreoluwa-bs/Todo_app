@@ -58,6 +58,9 @@ flutter:
     - family: Airbnb
       fonts:
         - asset: assets/fonts/airbnbcerealbook.ttf
+    - family: AirbnbBold
+      fonts:
+        - asset: assets/fonts/airbnbcerealmedium.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

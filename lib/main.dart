@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         fontFamily: 'Airbnb',
+        primarySwatch: Colors.blue,
       ),
       title: 'To-do Application',
       home: HomePage(),

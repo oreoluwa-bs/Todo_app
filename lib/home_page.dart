@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import './sliver_bar.dart';
 import './edit_task_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,18 +49,13 @@ class _HomePageState extends State<HomePage> {
   ];
   TextEditingController _textController = TextEditingController();
 
-  // void editTask(taskobj, index) {
-  //   print(taskobj);
-  //   setState(() {
-  //     // _tasks[index] = taskobj;
-  //   });
-  // }
-
   createAddTaskDialog(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
             title: Text('Add a task'),
             content: TextField(
               autofocus: true,
@@ -74,6 +70,10 @@ class _HomePageState extends State<HomePage> {
             ),
             actions: <Widget>[
               FlatButton(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
                 child: Text('Cancel'),
                 onPressed: () {
                   _textController.clear();
@@ -81,6 +81,10 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               RaisedButton(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
                 elevation: 5.0,
                 child: Text(
                   'Done',
@@ -104,43 +108,38 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  Widget _buildTaskList() {
-    return new ListView.builder(
-      itemCount: _tasks.length,
-      itemBuilder: (context, index) {
-        final item = _tasks[index]['task'];
-        if (index < _tasks.length) {
-          return Dismissible(
-            key: Key(item),
-            direction: DismissDirection.horizontal,
-            dismissThresholds: const {DismissDirection.horizontal: 0.4},
-            onDismissed: (direction) {
-              setState(() {
-                _tasks.removeAt(index);
-              });
-              Scaffold.of(context).showSnackBar(SnackBar(
-                  duration: Duration(seconds: 3),
-                  content: Text("$item was deleted")));
-            },
-            background: Container(
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(horizontal: 15),
-              color: Colors.red[600],
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Icon(Icons.delete, color: Colors.white),
-                  Icon(Icons.delete, color: Colors.white)
-                ],
-              ),
-            ),
-            child: _buildTaskItem(_tasks[index], index),
-          );
-        } else {
-          return null;
-        }
-      },
-    );
+  Widget _buildTaskList(context, int index) {
+    final item = _tasks[index]['task'];
+    if (index < _tasks.length) {
+      return Dismissible(
+        key: Key(item),
+        direction: DismissDirection.horizontal,
+        dismissThresholds: const {DismissDirection.horizontal: 0.4},
+        onDismissed: (direction) {
+          setState(() {
+            _tasks.removeAt(index);
+          });
+          Scaffold.of(context).showSnackBar(SnackBar(
+              duration: Duration(seconds: 3),
+              content: Text("$item was deleted")));
+        },
+        background: Container(
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          color: Colors.red[600],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Icon(Icons.delete, color: Colors.white),
+              Icon(Icons.delete, color: Colors.white)
+            ],
+          ),
+        ),
+        child: _buildTaskItem(_tasks[index], index),
+      );
+    } else {
+      return null;
+    }
   }
 
   Widget _buildTaskItem(Map taskObj, int index) {
@@ -189,16 +188,33 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(4294046193),
-      appBar: AppBar(
-          title: Text(
-        'My Day',
-        style: TextStyle(
-          fontSize: 34,
-          fontFamily: 'Airbnb',
-          fontWeight: FontWeight.w500,
-        ),
-      )),
-      body: _buildTaskList(),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          Sliverbar('My Day'),
+          _tasks.length > 0
+              ? (SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return _buildTaskList(context, index);
+                    },
+                    childCount: _tasks.length,
+                  ),
+                ))
+              : SliverList(
+                  delegate: SliverChildListDelegate([
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Tap the + icon to add a task',
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ]),
+                )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           createAddTaskDialog(context);
