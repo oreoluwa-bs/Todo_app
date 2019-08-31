@@ -21,7 +21,7 @@ class Sliverbar extends StatelessWidget {
           ),
         ),
         background: Image.network(
-          "http://placeimg.com/640/480/nature/sepia",
+          "https://source.unsplash.com/daily?nature",
           fit: BoxFit.cover,
         ),
       ),

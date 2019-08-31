@@ -204,9 +204,11 @@ class _HomePageState extends State<HomePage> {
                   delegate: SliverChildListDelegate([
                     Container(
                       alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 100),
                       child: Text(
                         'Tap the + icon to add a task',
                         style: TextStyle(
+                          color: Colors.grey,
                           fontSize: 20,
                         ),
                       ),
